@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  client-backend:
+    image: client:0.0.1
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      - service-db
+    environment:
+      - SERVER_PORT= ${SERVER_PORT}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://service-db/gazprom
+    volumes:
+      - "./serverfiles:/user/local/Documents"
+      - serverfiles:/user/local/Documents
+
+  service-db:
+    image: postgres:14.7-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "gazprom" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - ./deployment/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  serverfiles:
