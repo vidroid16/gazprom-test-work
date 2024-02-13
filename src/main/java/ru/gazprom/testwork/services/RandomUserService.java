@@ -58,11 +58,11 @@ public class RandomUserService {
         users.forEach(u->{
             TimeZone zone = timeZoneRepository.
                     getByOffsetAndDescription(u.getLocation().getTimeZone().getOffset(),
-                            u.getLocation().getTimeZone().getOffset()).orElse(null);
+                            u.getLocation().getTimeZone().getDescription()).orElse(null);
             if (zone==null){
                 zone = timeZoneRepository.save(u.getLocation().getTimeZone());
             }
-            u.getLocation().setTimeZone(zone);
+            u.getLocation().getTimeZone().setId(zone.getId());
             userRepository.save(u);
         });
     }

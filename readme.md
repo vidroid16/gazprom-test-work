@@ -12,7 +12,7 @@ git clone https://github.com/vidroid16/gazprom-test-work.git
 ```bash
 docker-compose  --env-file docker-start-confg.env up
 ```
-Примечание: heartbeat бд не работает. Fatal error не получилось исправить
+Примечание: healthcheck бд не работает. Fatal error не получилось исправить
 
 4) Api можно посмотреть в ru/gazprom/testwork/api/RandomUsersController.java
 ### Консольный старт
@@ -27,6 +27,12 @@ get 5 filename.csv # загрузить 10 случайных пользоват
 ```
 3) Файлы хранятся в томе gazprom_serverfiles.
 Можно в докер десктопе посмотреть
+
+### Описание 
+По структуре приложение типичный spring сервер.
+Бизнес логика реализована в классе RandomUserService. В пакете utills логика парсинга сущностей
+в CSV с помощью Apache СSV Utills. Консоль реализована в главном классе. Для маппинга сущностей
+и дто используется ModelMapper.
 
 ### Как добавить выгрузку excel и другие форматы
 Пример:
@@ -67,5 +73,9 @@ private final HashMap <String, FormatCaster> casters;
 ByteArrayOutputStream os = casters.get("csv").cast(userDtos);
 ```
 
-### Описание
-1) Для парсинга используется Apache CSV Utills 
+### Узкие места и что можно улучшить
+1. Решить N+1 проблему добавив EntityGraph или написав nativeQuery
+2. Улучшить обработку ошибок
+3. Написать больше логов и сделать нормальный логгер
+4. Исправить healthcheck БД
+5. Облагородить консольный ввод-вывод

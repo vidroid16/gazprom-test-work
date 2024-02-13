@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface TimeZoneRepository extends CrudRepository<TimeZone, Long> {
-    public Optional<TimeZone> getByOffsetAndDescription(String offset, String description);
+    Optional<TimeZone> getByOffsetAndDescription(String offset, String description);
 }
